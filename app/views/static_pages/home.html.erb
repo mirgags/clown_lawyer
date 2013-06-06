@@ -1,7 +1,16 @@
-<h1>Sample App</h1>
-<p>
-  This is the homepage for the 
-   <a href="http://railstutorial.org/">Ruby on Rails Tutorial</a>
+<div class="center hero-unit">
+  <h1>This here is the Sample App</h1>
+
+  <h2>
+    You got to the home page, Champ!  We're buidling according to: 
+    <a href="http://railstutorial.org/">Ruby on Rails Tutorial</a>
     sample app.
-</p>
+
+    Check out this cool satellite image of beach erosion at my friend Simon's pl    ace.
+  </h2>
+
+  <%= link_to "Sign your ass up!", '#', class: "btn btn-large btn-primary" %>
+</div>
+
+<%= link_to image_tag("rails.png", alt: "Rails"), 'http://imgur.com/I8JzCH4' %>
 
