@@ -1,14 +1,20 @@
 require 'spec_helper'
 
 describe User do
-  before { @user = User.new(name: "Example User", email: "user@example.com") }
+
+  before do
+    @user = User.new(name: "Example User", email: "user@example.com", password: "foobar", password_confirmation: "foobar")
+  end
 
   subject { @user }
 
   it { should respond_to(:name) }
   it { should respond_to(:email) }
+  it { should respond_to(:password_digest) }
+  it { should respond_to(:password) }
+  it { should respond_to(:password_confirmation) }
 
-  it {should be_valid }
+  it { should be_valid }
 
   describe "when name is not present" do
     before { @user.name = " " }
@@ -25,23 +31,44 @@ describe User do
     it {should_not be_valid }
   end
 
-#  describe "when the email format is screwed up" do
-#    it "should be invalid" do
-#      addresses = %w[users@foo,com user_at_foo.org sample.user@foo. foo@barr_baz.com foo@bar-but.com]
-#      addresses.each do |invalid_address|
-#        @user.email = invalid_address
-#        expect(@user).not_to be_valid
-#      end
-#    end
-#  end
+  describe "when the email format is screwed up" do
+    it "should be invalid" do
+      addresses = %w[users@foo,com user_at_foo.org sample.user@foo. foo@barr_baz.com foo@bar+but.com]
+      addresses.each do |invalid_address|
+        @user.email = invalid_address
+        expect(@user).not_to be_valid
+      end
+    end
+  end
 
-#  describe "when the email format is all good" do
-#    it "should be valid" do
-#      addresses = %w[user@foo.COM A_US-ERS@f.u.org frsit.last@foo.po r+l@jon.sn]
-#      addresses.each do |valid_address|
-#        @user.email = valid_address
-#        expect(@user).to be_valid
-#      end
-#    end
-#  end
+  describe "when the email format is all good" do
+    it "should be valid" do
+      addresses = %w[user@foo.COM A_US-ERS@f.u.org frsit.last@foo.po r+l@jon.sn]
+      addresses.each do |valid_address|
+        @user.email = valid_address
+        expect(@user).to be_valid
+      end
+    end
+  end
+
+  describe "when email is duplicate" do
+    before do
+      user_with_same_email = @user.dup
+      user_with_same_email.email = @user.email.upcase
+      user_with_same_email.save
+    end
+    it { should_not be_valid }
+  end
+
+  describe "when password is not present" do
+    before do
+      @user = User.new(name: "Example User", email: "user@example.com", password: " ", password_confirmation: " ")
+    end
+    it { should_not be_valid }
+  end
+
+  describe "when password doesn't match password confirmation" do
+    before { @user.password_confirmation = "mismatch" }
+    it { should_not be_valid }
+  end
 end
